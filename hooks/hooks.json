@@ -7,13 +7,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${QODER_NODE_RUNTIME}",
+            "command": "cmd.exe",
             "args": [
-              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "/d",
+              "/c",
+              "call",
+              "\"${QODER_PLUGIN_ROOT}\\bin\\purge-hook.cmd\"",
               "session-start"
             ],
             "name": "purge-session-start",
-            "timeout": 5
+            "timeout": 8
           }
         ]
       }
@@ -24,13 +27,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${QODER_NODE_RUNTIME}",
+            "command": "cmd.exe",
             "args": [
-              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "/d",
+              "/c",
+              "call",
+              "\"${QODER_PLUGIN_ROOT}\\bin\\purge-hook.cmd\"",
               "user-prompt-submit"
             ],
             "name": "purge-inject",
-            "timeout": 5
+            "timeout": 8
           }
         ]
       }
@@ -41,13 +47,36 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${QODER_NODE_RUNTIME}",
+            "command": "cmd.exe",
             "args": [
-              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "/d",
+              "/c",
+              "call",
+              "\"${QODER_PLUGIN_ROOT}\\bin\\purge-hook.cmd\"",
               "pre-tool-use"
             ],
             "name": "purge-allow",
-            "timeout": 5
+            "timeout": 8
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd.exe",
+            "args": [
+              "/d",
+              "/c",
+              "call",
+              "\"${QODER_PLUGIN_ROOT}\\bin\\purge-hook.cmd\"",
+              "permission-request"
+            ],
+            "name": "purge-permission-allow",
+            "timeout": 8
           }
         ]
       }

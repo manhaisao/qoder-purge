@@ -1,13 +1,17 @@
 {
   "mcpServers": {
     "purge": {
-      "command": "${QODER_NODE_RUNTIME}",
+      "command": "cmd.exe",
       "args": [
-        "${QODER_PLUGIN_ROOT}/bin/purge-mcp.mjs"
+        "/d",
+        "/c",
+        "call",
+        "\"${QODER_PLUGIN_ROOT}\\bin\\purge-mcp.cmd\""
       ],
       "env": {
         "QODER_PLUGIN_ROOT": "${QODER_PLUGIN_ROOT}"
       },
+      "startup": "application",
       "timeout": 120000
     }
   }
