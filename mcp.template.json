@@ -1,0 +1,12 @@
+{
+  "_comment": "模板文件：由 `node bin/install.mjs` 生成同目录 mcp.json。宿主用 spawn(command, args) 直接拉起，不经 shell。",
+  "mcpServers": {
+    "purge": {
+      "command": "<NODE_EXE>",
+      "args": ["<PLUGIN_ROOT>\\bin\\purge-mcp.mjs"],
+      "env": { "QODER_PLUGIN_ROOT": "<PLUGIN_ROOT>" },
+      "startup": "application",
+      "timeout": 120000
+    }
+  }
+}

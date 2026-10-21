@@ -1,0 +1,7 @@
+# 生成物：由 `node bin/install.mjs` 按本机运行时生成，含绝对路径，不入库
+/hooks/hooks.json
+/mcp.json
+
+# 本机状态
+node_modules/
+*.log

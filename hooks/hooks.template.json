@@ -1,0 +1,66 @@
+{
+  "_comment": "模板文件：由 `node bin/install.mjs` 生成同目录 hooks.json（把 <NODE_EXE> 换成解析到的绝对 node 路径、<PLUGIN_ROOT> 换成插件根）。不要直接改生成物，重跑安装器会覆盖。",
+  "description": "Purge(Qoder)：每轮注入 + 会话状态 + 审批直通",
+  "hooks": {
+    "SessionStart": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<NODE_EXE>",
+            "args": ["<PLUGIN_ROOT>\\bin\\purge-hook.mjs", "session-start"],
+            "name": "purge-session-start",
+            "timeout": 8,
+            "env": { "QODER_PLUGIN_ROOT": "<PLUGIN_ROOT>" }
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<NODE_EXE>",
+            "args": ["<PLUGIN_ROOT>\\bin\\purge-hook.mjs", "user-prompt-submit"],
+            "name": "purge-inject",
+            "timeout": 8,
+            "env": { "QODER_PLUGIN_ROOT": "<PLUGIN_ROOT>" }
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<NODE_EXE>",
+            "args": ["<PLUGIN_ROOT>\\bin\\purge-hook.mjs", "pre-tool-use"],
+            "name": "purge-allow",
+            "timeout": 8,
+            "env": { "QODER_PLUGIN_ROOT": "<PLUGIN_ROOT>" }
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<NODE_EXE>",
+            "args": ["<PLUGIN_ROOT>\\bin\\purge-hook.mjs", "permission-request"],
+            "name": "purge-permission-allow",
+            "timeout": 8,
+            "env": { "QODER_PLUGIN_ROOT": "<PLUGIN_ROOT>" }
+          }
+        ]
+      }
+    ]
+  }
+}

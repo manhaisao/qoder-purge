@@ -39,21 +39,33 @@ node test/smoke.mjs                   # 8 项冒烟
 `%USERPROFILE%\.qoder-cn\plugins\cache\local\purge-qoder\0.1.0\`，在 `installed_plugins_v2.json`
 与 `settings.json` 里登记为 `purge-qoder@local`，重启 Qoder。
 
-## 运行时启动器（为什么不直接用 `${QODER_NODE_RUNTIME}`）
+## 为什么配置是"生成"的（`node bin/install.mjs`）
 
-Qoder 内置插件在 `mcp.json` 里写 `${QODER_NODE_RUNTIME}`，但宿主只对**部分**配置注入该变量
-（`app.asar` 里的转换函数是 `if (命令命中哨兵 || 标志位为 true) 才注入`）。hooks 侧没有证据能保证
-它被注入，一旦为空，`command` 直接 spawn 失败、注入静默消失。
+两个坑都是实测踩出来的，写死在仓库里一定会坏：
 
-所以 hooks 与 MCP 统一走 `cmd.exe → bin/purge-hook.cmd / bin/purge-mcp.cmd`，由 `.cmd` 自己按
-以下顺序解析 JS 运行时（照抄内置 `qoder-context` 的 `bin/qoder-context.cmd` 策略）：
+1. **宿主的 HookRunner 不经 shell**。`spawn(command, args)` 直拉，args 里的引号原样传给被调程序。
+   我第一版写 `command: "cmd.exe"` + `args: ["/d","/c","call","\"<path>.cmd\""]`，日志立刻报：
+   ```
+   [HookRunner] Hook "cmd.exe" (event: UserPromptSubmit) exited with code 1.
+   stderr: '"\"C:\...\purge-hook.cmd\""' 不是内部或外部命令
+   ```
+   带引号的路径被当成一个字面量命令名。
+2. **`${QODER_NODE_RUNTIME}` 是条件注入**。`app.asar` 里的转换函数是
+   `if (命令命中哨兵 || 标志位 === true) 才注入`；hooks 侧没有任何证据保证它存在，为空即 spawn 失败。
 
-1. `%QODER_NODE_RUNTIME%`（宿主若注入了就用它）
-2. `%ProgramFiles%\nodejs\node.exe`、`%ProgramW6432%\nodejs\node.exe`、`%LOCALAPPDATA%\Programs\nodejs\node.exe`
-3. `where node.exe`
-4. `Qoder CN.exe` + `ELECTRON_RUN_AS_NODE=1`（没装 Node 的机器也能跑）
+所以 `bin/install.mjs` 在安装时解析出**绝对 node 路径**（顺序：自身 `process.execPath` →
+`%ProgramFiles%\nodejs\node.exe` → `%ProgramW6432%` → `%LOCALAPPDATA%\Programs\nodejs` →
+`where node.exe` → 最后退到 `Qoder CN.exe` + `ELECTRON_RUN_AS_NODE=1`，没装 Node 也能跑），
+把结果写进 `hooks/hooks.json` 与 `mcp.json`；命令行里不出现任何需要 shell 解释的东西。
 
-全部失败时 hook 打印 `{}` 并 `exit /b 0`——**fail open**，绝不让宿主因插件异常而卡住。
+```sh
+node bin/install.mjs              # 只生成配置
+node bin/install.mjs --register   # 顺带登记进 ~/.qoder-cn 并启用
+```
+
+`hooks/hooks.json` 与 `mcp.json` 是生成物（已 gitignore），模板见 `hooks/hooks.template.json`
+与 `mcp.template.json`。`bin/purge-hook.cmd` / `bin/purge-mcp.cmd` 保留作手动/可移植入口，
+宿主链路不再使用它们。
 
 ## 不做的事
 
