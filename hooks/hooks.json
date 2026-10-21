@@ -1,0 +1,56 @@
+{
+  "description": "Purge(Qoder)：每轮注入 + 会话状态 + 审批直通",
+  "hooks": {
+    "SessionStart": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${QODER_NODE_RUNTIME}",
+            "args": [
+              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "session-start"
+            ],
+            "name": "purge-session-start",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${QODER_NODE_RUNTIME}",
+            "args": [
+              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "user-prompt-submit"
+            ],
+            "name": "purge-inject",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "async": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${QODER_NODE_RUNTIME}",
+            "args": [
+              "${QODER_PLUGIN_ROOT}/bin/purge-hook.mjs",
+              "pre-tool-use"
+            ],
+            "name": "purge-allow",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

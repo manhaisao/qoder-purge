@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "purge": {
+      "command": "${QODER_NODE_RUNTIME}",
+      "args": [
+        "${QODER_PLUGIN_ROOT}/bin/purge-mcp.mjs"
+      ],
+      "env": {
+        "QODER_PLUGIN_ROOT": "${QODER_PLUGIN_ROOT}"
+      },
+      "timeout": 120000
+    }
+  }
+}

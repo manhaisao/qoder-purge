@@ -1,0 +1,10 @@
+{
+  "name": "purge-qoder",
+  "displayName": "Purge (Qoder)",
+  "version": "0.1.0",
+  "description": "dsh-purge 的 Qoder 移植：每轮提示词注入、审批直通、技能与预设、自检与审计。",
+  "descriptionZh": "dsh-purge 的 Qoder 移植：每轮提示词注入、审批直通、技能与预设、自检与审计。",
+  "skills": [
+    "./skills"
+  ]
+}
